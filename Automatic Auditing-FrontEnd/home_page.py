@@ -1,31 +1,39 @@
-from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QLabel
+import sys
+from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QMessageBox, QVBoxLayout, QWidget
 
-class HomePage(QWidget):
-    navigate_to_personal = pyqtSignal()
-    navigate_to_organization = pyqtSignal()
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
 
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.setWindowTitle("Home Page")
-        self.setGeometry(100, 100, 800, 600)  # Adjust size as needed
-        
+        self.setWindowTitle("Button Example")
+        self.setGeometry(100, 100, 300, 200)
+
+        # Create buttons
+        self.button_personal = QPushButton("Personal", self)
+        self.button_organization = QPushButton("Organization", self)
+
+        # Connect buttons to their slot methods
+        self.button_personal.clicked.connect(self.show_personal_message)
+        self.button_organization.clicked.connect(self.show_organization_message)
+
+        # Layout
         layout = QVBoxLayout()
-        
-        self.title = QLabel("Welcome to Our Audit Tool", self)
-        self.title.setStyleSheet("font-size: 24px; font-weight: bold; text-align: center;")
-        layout.addWidget(self.title)
-        
-        self.subtitle = QLabel("Please select your role to proceed:", self)
-        self.subtitle.setStyleSheet("font-size: 16px; text-align: center;")
-        layout.addWidget(self.subtitle)
-        
-        self.personal_button = QPushButton("Personal Use", self)
-        self.personal_button.clicked.connect(self.navigate_to_personal.emit)
-        layout.addWidget(self.personal_button)
-        
-        self.organization_button = QPushButton("Organization Use", self)
-        self.organization_button.clicked.connect(self.navigate_to_organization.emit)
-        layout.addWidget(self.organization_button)
-        
-        self.setLayout(layout)
+        layout.addWidget(self.button_personal)
+        layout.addWidget(self.button_organization)
+
+        # Central widget
+        central_widget = QWidget(self)
+        central_widget.setLayout(layout)
+        self.setCentralWidget(central_widget)
+
+    def show_personal_message(self):
+        QMessageBox.information(self, "Button Clicked", "Personal button clicked")
+
+    def show_organization_message(self):
+        QMessageBox.information(self, "Button Clicked", "Organization button clicked")
+
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    main_window = MainWindow()
+    main_window.show()
+    sys.exit(app.exec_())
